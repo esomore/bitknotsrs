@@ -1,0 +1,98 @@
+network = "regtest"
+datadir = "./data"
+
+[api]
+host = "127.0.0.1"
+port = 8332
+enabled = true
+cors_enabled = true
+
+[api.rate_limit]
+requests_per_minute = 100
+burst_size = 10
+
+[rpc]
+host = "127.0.0.1"
+port = 18443
+user = "user"
+password = "pass"
+enabled = true
+allowed_methods = [
+    "getblockchaininfo",
+    "getbestblockhash",
+    "getblock",
+    "gettransaction",
+    "sendrawtransaction",
+]
+
+[storage]
+rocks_db_path = "./data/rocksdb"
+cache_size = 268435456
+max_open_files = 1000
+compression = "lz4"
+backup_enabled = false
+backup_interval_hours = 24
+
+[network_config]
+listen_port = 18444
+max_peers = 8
+connection_timeout_secs = 30
+
+[network_config.zmq]
+enabled = true
+pub_port = 28332
+sub_endpoints = []
+topics = [
+    "hashblock",
+    "hashtx",
+    "rawblock",
+    "rawtx",
+]
+
+[metrics]
+enabled = true
+host = "127.0.0.1"
+port = 9090
+path = "/metrics"
+
+[metrics.otel]
+enabled = false
+service_name = "bitknotsrs"
+service_version = "0.1.0"
+
+[logging]
+level = "info"
+format = "json"
+file_enabled = true
+file_path = "./logs/bitknotsrs.log"
+max_file_size_mb = 100
+max_files = 10
+
+[events]
+enabled_publishers = ["zmq"]
+
+[events.zmq]
+enabled = true
+port = 28333
+topics = [
+    "block",
+    "transaction",
+    "peer",
+]
+
+[events.k8s]
+enabled = false
+namespace = "bitcoin"
+node_name = "bitknotsrs-node"
+event_types = [
+    "block",
+    "transaction",
+    "peer",
+    "chain",
+]
+
+[events.webhook]
+enabled = false
+endpoints = []
+timeout_secs = 10
+retry_attempts = 3
