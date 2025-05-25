@@ -255,6 +255,7 @@ Compatible with Bitcoin Core RPC:
 
 ### Prerequisites
 - [Just](https://github.com/casey/just) command runner (recommended)
+- [Radicle](https://radicle.xyz) for decentralized issue management
 - Rust 1.70+
 - RocksDB development libraries
 
@@ -269,13 +270,59 @@ just test
 # Quick development check (format, lint, test)
 just quick-check
 
-# Run in development mode with auto-reload
-just dev
+# Development workflow with Radicle sync
+just dev-workflow
 
 # Build and run in regtest mode
 just build
 just run-regtest
 ```
+
+### 🌐 Radicle Integration
+
+This project uses [Radicle](https://radicle.xyz) for decentralized issue management and collaboration:
+
+```bash
+# Issue Management
+just issues                    # List all issues
+just issue <id>               # View specific issue
+just draft-issue <name>       # Create issue draft locally
+just create-issue "<title>" <draft>  # Create Radicle issue from draft
+
+# Patch Management
+just patches                  # List all patches
+just patch <id>              # View specific patch
+just patch-prep              # Prepare code for patch submission
+just patch-new               # Create new patch
+
+# Collaboration
+just sync                    # Sync with Radicle network
+just rad-peers              # Show connected Radicle peers
+just rad-status             # Show Radicle node status
+```
+
+### 📝 Issue Workflow
+
+The project uses a local `.issues/` workspace for drafting before creating Radicle issues:
+
+```
+.issues/
+├── README.md              # Workflow documentation
+├── templates/             # Issue and patch templates
+│   ├── issue-template.md  # Standard issue format
+│   └── patch-template.md  # Standard patch format
+├── drafts/               # Work-in-progress (git-ignored)
+└── temp/                 # Temporary files (git-ignored)
+```
+
+**Workflow**:
+1. **Draft locally**: `just draft-issue networking-feature`
+2. **Edit draft**: `.issues/drafts/networking-feature.md`
+3. **Create in Radicle**: `just create-issue "Networking Feature" networking-feature`
+4. **Track progress**: `just issue <issue-id>`
+5. **Clean up**: `just clean-drafts`
+
+This approach gives you local file editing benefits while keeping Radicle as the source of truth.
 
 ### Testing
 The project includes comprehensive unit tests covering all core components:
@@ -377,12 +424,32 @@ Most commonly used commands:
 | `just stats` | Show project statistics |
 | `just --list` | Show all available commands |
 
+### 🚀 Current Development Status
+
+**Active Issue**: [Implement P2P Networking and Peer Discovery](https://app.radicle.xyz/nodes/z6MksFqXN3Yhqk8pTJdUGLwATkRfQvwZXPqR2qMEhbS9wzpT/rad:z32DWCTKTNy7dxJdmrBAe2cVR1bfktSMTqMT1hBPWEVk4GNp9M/issues/09a530958b8db3b8899b9531edc4ae4cea041f7b)
+*Issue ID: `09a530958b8db3b8899b9531edc4ae4cea041f7b`*
+
+**Current Phase**: Network Foundation
+- [ ] Create network constants module with magic bytes, ports, DNS seeds per network
+- [ ] Enhance configuration for network-specific settings
+- [ ] Generate network-specific config files (mainnet.toml, testnet.toml)
+- [ ] Add network-aware Just commands
+
+**Next Phases**: Peer Discovery → Connection Management → Protocol Messages → Integration
+
 ### Contributing
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
+
+This project uses **Radicle** for decentralized collaboration:
+
+1. **Check active issues**: `just issues`
+2. **Create feature branch**: `git checkout -b feature/your-feature`
+3. **Draft your work**: `just draft-issue your-feature` (optional)
+4. **Make your changes** and add tests
+5. **Prepare patch**: `just patch-prep`
+6. **Submit patch**: `just patch-new`
+7. **Sync with network**: `just sync`
+
+For traditional Git workflows, you can still create pull requests, but we encourage using Radicle patches for a truly decentralized experience.
 
 ## 📋 Roadmap
 

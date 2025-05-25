@@ -28,6 +28,39 @@ This project uses **Radicle** (https://radicle.xyz) for decentralized issue mana
 - Remember this is a decentralized, peer-to-peer development environment
 - The project values sovereignty and decentralization in development tools
 
+### Issue Workflow for AI Agents
+1. **Draft issues locally** using `.issues/` workspace before creating in Radicle
+2. **Use templates** from `.issues/templates/` for consistency
+3. **Create drafts** with `just draft-issue <name>`
+4. **Create Radicle issues** with `just create-issue "<title>" <draft>`
+5. **Track progress** with `just issues` and `just issue <id>`
+6. **Clean up** with `just clean-drafts` after syncing
+
+### Development Workflow Commands
+- `just dev-workflow` - Format, lint, test, and sync with Radicle
+- `just patch-prep` - Prepare code for patch submission
+- `just patch-new` - Create new patch from current branch
+- `just sync` - Sync with Radicle network
+- `just issues` - List all issues
+- `just patches` - List all patches
+
+### Git & Repository Management
+- `just git-status` - Enhanced git status with ignored files
+- `just git-clean` - Clean git ignored files
+- `just clean-drafts` - Clean up temporary issue/patch drafts
+- `just list-drafts` - Show current drafts in workspace
+
+### File Structure Notes
+- `.issues/` - Local workspace for drafting (drafts/ and temp/ are git-ignored)
+- `justfile` - All development commands (50+ commands available)
+- `.gitignore` - Comprehensive ignore rules for Bitcoin node development
+- `.gitattributes` - Ensures consistent line endings and file handling
+
+### Current Active Issues
+- Issue #09a530958b8db3b8899b9531edc4ae4cea041f7b: "Implement P2P Networking and Peer Discovery"
+  - Status: Open, tracking P2P networking implementation
+  - Phases: Network Foundation → Peer Discovery → Connection Management → Protocol Messages → Integration
+
 ## Project Context
 - **Language**: Rust
 - **Type**: Bitcoin node implementation
