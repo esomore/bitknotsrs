@@ -104,6 +104,21 @@ quick-check:
     cargo clippy
     cargo test
 
+# Development workflow with Radicle sync
+dev-workflow:
+    cargo fmt
+    cargo clippy
+    cargo test
+    rad sync
+
+# Prepare patch (format, lint, test, sync)
+patch-prep:
+    cargo fmt
+    cargo clippy -- -D warnings
+    cargo test
+    rad sync
+    @echo "Ready to create patch with: just patch-new"
+
 # === DOCKER COMMANDS ===
 
 # Build Docker image
@@ -151,6 +166,119 @@ test-rpc-hash:
     curl -s -X POST http://localhost:18443 \
         -H "Content-Type: application/json" \
         -d '{"jsonrpc":"2.0","method":"getbestblockhash","params":[],"id":1}' | jq .
+
+# === RADICLE COMMANDS ===
+
+# List all issues
+issues:
+    rad issue list
+
+# Show specific issue
+issue id:
+    rad issue show {{id}}
+
+# Create new issue
+issue-new:
+    rad issue open
+
+# List all patches
+patches:
+    rad patch list
+
+# Show specific patch
+patch id:
+    rad patch show {{id}}
+
+# Create new patch from current branch
+patch-new:
+    rad patch open
+
+# Sync with Radicle network
+sync:
+    rad sync
+
+# Show repository information
+rad-info:
+    rad inspect
+
+# Show connected peers
+rad-peers:
+    rad node sessions
+
+# Clone a Radicle repository
+rad-clone repo_id:
+    rad clone {{repo_id}}
+
+# Initialize current repository for Radicle
+rad-init:
+    rad init
+
+# Publish repository to Radicle network
+rad-publish:
+    rad push
+
+# Show Radicle node status
+rad-status:
+    rad node status
+
+# Start Radicle node
+rad-start:
+    rad node start
+
+# Stop Radicle node
+rad-stop:
+    rad node stop
+
+# Show Radicle identity
+rad-id:
+    rad self
+
+# === ISSUE WORKSPACE COMMANDS ===
+
+# Create new issue draft from template
+draft-issue name:
+    cp .issues/templates/issue-template.md .issues/drafts/{{name}}.md
+    @echo "Created issue draft: .issues/drafts/{{name}}.md"
+
+# Create new patch draft from template
+draft-patch name:
+    cp .issues/templates/patch-template.md .issues/drafts/{{name}}.md
+    @echo "Created patch draft: .issues/drafts/{{name}}.md"
+
+# Create issue from draft
+create-issue title draft:
+    rad issue open --title "{{title}}" --description "$(cat .issues/drafts/{{draft}}.md)"
+
+# Create patch from draft
+create-patch title draft:
+    rad patch open --title "{{title}}" --description "$(cat .issues/drafts/{{draft}}.md)"
+
+# Clean up temporary files
+clean-drafts:
+    rm -f .issues/drafts/*.md
+    rm -f .issues/temp/*.md
+
+# List current drafts
+list-drafts:
+    @echo "=== Issue/Patch Drafts ==="
+    @ls -la .issues/drafts/ 2>/dev/null || echo "No drafts found"
+
+# === GIT WORKFLOW COMMANDS ===
+
+# Check git status and show ignored files
+git-status:
+    git status
+    @echo ""
+    @echo "=== Recently ignored files ==="
+    @git ls-files --others --ignored --exclude-standard | head -10
+
+# Clean git ignored files
+git-clean:
+    git clean -fdX
+
+# Show what would be cleaned
+git-clean-dry:
+    git clean -fdXn
 
 # === UTILITY COMMANDS ===
 
@@ -283,6 +411,31 @@ help-dev:
     @echo "fix            - Fix linting issues"
     @echo "quick-check    - Format, lint, and test"
 
+# Show Radicle help
+help-rad:
+    @echo "=== Radicle Commands ==="
+    @echo "issues         - List all issues"
+    @echo "issue <id>     - Show specific issue"
+    @echo "issue-new      - Create new issue"
+    @echo "patches        - List all patches"
+    @echo "patch <id>     - Show specific patch"
+    @echo "patch-new      - Create new patch from current branch"
+    @echo "sync           - Sync with Radicle network"
+    @echo "rad-info       - Show repository information"
+    @echo "rad-peers      - Show connected peers"
+    @echo "rad-status     - Show Radicle node status"
+    @echo "rad-start      - Start Radicle node"
+    @echo "rad-stop       - Stop Radicle node"
+    @echo "rad-id         - Show Radicle identity"
+    @echo ""
+    @echo "=== Issue Workspace Commands ==="
+    @echo "draft-issue <name>     - Create issue draft from template"
+    @echo "draft-patch <name>     - Create patch draft from template"
+    @echo "create-issue <title> <draft> - Create Radicle issue from draft"
+    @echo "create-patch <title> <draft> - Create Radicle patch from draft"
+    @echo "list-drafts            - List current drafts"
+    @echo "clean-drafts           - Clean up temporary files"
+
 # Show all help sections
 help-all:
     @just help-build
@@ -292,3 +445,5 @@ help-all:
     @just help-test
     @echo ""
     @just help-dev
+    @echo ""
+    @just help-rad

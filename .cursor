@@ -1,0 +1,37 @@
+# BitKnotsRS Project Configuration for AI Agents
+
+## Issue Management & Collaboration
+This project uses **Radicle** (https://radicle.xyz) for decentralized issue management and code collaboration.
+
+### Radicle Setup
+- **Protocol**: Peer-to-peer Git collaboration without centralized servers
+- **Installation Guide**: https://radicle.xyz/guides/user#installation
+- **CLI Tool**: `rad` command for managing repositories, issues, and patches
+
+### Key Radicle Commands
+- `rad issue list` - List project issues
+- `rad issue show <id>` - View specific issue details
+- `rad issue open` - Create new issue
+- `rad patch list` - List patches/pull requests
+- `rad patch show <id>` - View patch details
+- `rad sync` - Synchronize with network peers
+
+### Project Workflow
+1. Issues are managed through Radicle's decentralized issue tracker
+2. Code collaboration happens via Radicle patches (equivalent to pull requests)
+3. No dependency on GitHub/GitLab for issue tracking
+4. Peer-to-peer collaboration model
+
+### For AI Agents
+- When discussing issues, refer to Radicle's issue management system
+- Suggest using `rad` commands for issue-related tasks
+- Remember this is a decentralized, peer-to-peer development environment
+- The project values sovereignty and decentralization in development tools
+
+## Project Context
+- **Language**: Rust
+- **Type**: Bitcoin node implementation
+- **Architecture**: Actor-based with Actix
+- **Storage**: RocksDB
+- **Build Tool**: Cargo + Just command runner
+- **Testing**: Comprehensive unit test suite (18+ tests)

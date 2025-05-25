@@ -1,1 +1,109 @@
-/target
+# Rust/Cargo generated files
+target/
+debug/
+**/*.rs.bk
+*.pdb
+
+# Cargo.lock is committed for binaries, ignored for libraries
+# Since BitKnotsRS is a binary, we should commit Cargo.lock
+# (Cargo.lock is NOT ignored for this project)
+
+# Build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Bitcoin node data directories
+data/
+test_data/
+regtest_data/
+mainnet_data/
+testnet_data/
+
+# Logs and temporary files
+logs/
+*.log
+*.tmp
+temp/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+rocksdb/
+leveldb/
+
+# Configuration overrides (keep templates)
+*-local.toml
+*-override.toml
+*-dev.toml
+local.toml
+override.toml
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.vim/
+.emacs.d/
+.sublime-*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Coverage reports
+tarpaulin-report.html
+coverage/
+lcov.info
+*.profraw
+
+# Benchmark results
+criterion/
+bench_results/
+
+# Flamegraph output
+flamegraph.svg
+perf.data*
+
+# Docker
+.dockerignore
+
+# Backup files
+*.bak
+*.backup
+backup-*
+db-backup-*
+
+# Temporary files for Radicle workflow
+.issues/drafts/
+.issues/temp/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Bitcoin Core compatibility files
+bitcoin.conf
+debug.log
+fee_estimates.dat
+mempool.dat
+peers.dat
+banlist.dat
+anchors.dat
+
+# Network specific data
+mainnet/
+testnet/
+regtest/
+signet/
