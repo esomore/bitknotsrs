@@ -1,0 +1,2 @@
+# This file ensures the drafts directory is tracked by git
+# Actual draft files are ignored by .gitignore
