@@ -29,12 +29,24 @@ This project uses **Radicle** (https://radicle.xyz) for decentralized issue mana
 - The project values sovereignty and decentralization in development tools
 
 ### Issue Workflow for AI Agents
-1. **Draft issues locally** using `.issues/` workspace before creating in Radicle
-2. **Use templates** from `.issues/templates/` for consistency
-3. **Create drafts** with `just draft-issue <name>`
-4. **Create Radicle issues** with `just create-issue "<title>" <draft>`
-5. **Track progress** with `just issues` and `just issue <id>`
-6. **Clean up** with `just clean-drafts` after syncing
+1. **Review checklist FIRST** with `just issue-checklist` before creating any issue
+2. **Check existing issues** with `just issues` to avoid duplicates
+3. **Search for similar issues** with `just search-issues <keyword>`
+4. **If similar issue exists**: Comment on existing issue or suggest collaboration
+5. **If new issue needed**: Draft locally using `.issues/` workspace before creating in Radicle
+6. **Use templates** from `.issues/templates/` for consistency
+7. **Create drafts** with `just draft-issue <name>`
+8. **Create Radicle issues** with `just create-issue "<title>" <draft>`
+9. **Track progress** with `just issues` and `just issue <id>`
+10. **Clean up** with `just clean-drafts` after syncing
+
+### Before Creating New Issues - ALWAYS CHECK:
+- Run `just issues` to see all existing issues
+- Use `just search-issues <keyword>` to find similar issues by topic
+- Use `just issues-summary` for a quick overview of all issues
+- Look for similar functionality, components, or goals
+- Check if the work could be added to an existing issue as a subtask
+- Consider if it's better to collaborate on existing work vs. creating new issue
 
 ### Development Workflow Commands
 - `just dev-workflow` - Format, lint, test, and sync with Radicle
@@ -42,7 +54,16 @@ This project uses **Radicle** (https://radicle.xyz) for decentralized issue mana
 - `just patch-new` - Create new patch from current branch
 - `just sync` - Sync with Radicle network
 - `just issues` - List all issues
+- `just search-issues <keyword>` - Search for issues by keyword
+- `just issues-summary` - Quick overview of all issues
 - `just patches` - List all patches
+
+### Issue Collaboration Guidelines
+- **Always search before creating**: Use search commands to find existing work
+- **Comment on existing issues**: Add thoughts, suggestions, or offer help
+- **Break down large issues**: Suggest subtasks or related issues when appropriate
+- **Reference related issues**: Use issue IDs when creating patches or related work
+- **Update issue status**: Comment on progress and completion
 
 ### Git & Repository Management
 - `just git-status` - Enhanced git status with ignored files

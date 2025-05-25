@@ -233,6 +233,16 @@ rad-stop:
 rad-id:
     rad self
 
+# Search issues by keyword (case-insensitive)
+search-issues keyword:
+    @echo "=== Searching issues for: {{keyword}} ==="
+    rad issue list | grep -i "{{keyword}}" || echo "No issues found matching '{{keyword}}'"
+
+# Show issue summary (titles only)
+issues-summary:
+    @echo "=== All Issues Summary ==="
+    rad issue list | head -20
+
 # === ISSUE WORKSPACE COMMANDS ===
 
 # Create new issue draft from template
@@ -262,6 +272,10 @@ clean-drafts:
 list-drafts:
     @echo "=== Issue/Patch Drafts ==="
     @ls -la .issues/drafts/ 2>/dev/null || echo "No drafts found"
+
+# Show issue creation checklist
+issue-checklist:
+    @cat .issues/templates/issue-checklist.md
 
 # === GIT WORKFLOW COMMANDS ===
 
@@ -415,6 +429,8 @@ help-dev:
 help-rad:
     @echo "=== Radicle Commands ==="
     @echo "issues         - List all issues"
+    @echo "issues-summary - Show issue titles only"
+    @echo "search-issues <keyword> - Search issues by keyword"
     @echo "issue <id>     - Show specific issue"
     @echo "issue-new      - Create new issue"
     @echo "patches        - List all patches"
@@ -429,6 +445,7 @@ help-rad:
     @echo "rad-id         - Show Radicle identity"
     @echo ""
     @echo "=== Issue Workspace Commands ==="
+    @echo "issue-checklist        - Show issue creation checklist"
     @echo "draft-issue <name>     - Create issue draft from template"
     @echo "draft-patch <name>     - Create patch draft from template"
     @echo "create-issue <title> <draft> - Create Radicle issue from draft"
