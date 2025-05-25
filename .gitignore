@@ -87,8 +87,7 @@ db-backup-*
 # Temporary files for Radicle workflow
 .issues/drafts/*.md
 .issues/temp/*
-!.issues/drafts/.gitkeep
-!.issues/temp/.gitkeep
+!.issues/**/.gitkeep
 
 # Environment files
 .env
