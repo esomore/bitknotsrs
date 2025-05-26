@@ -1,6 +1,6 @@
 # BitKnotsRS (bkrs)
 
-A **knots-inspired** Bitcoin node implementation written in Rust, designed for modern cloud-native environments with comprehensive observability and event streaming capabilities.
+A **knots-inspired** Bitcoin node implementation written in Rust.
 
 ## 🚀 Features
 
