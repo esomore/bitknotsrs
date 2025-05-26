@@ -441,6 +441,8 @@ Most commonly used commands:
 
 This project uses **Radicle** for decentralized collaboration:
 
+**🌐 Radicle Project**: [https://app.radicle.xyz/nodes/seed.radicle.garden/rad:zz8CzpVqLxYXKHsiKzDBPBa474HQ](https://app.radicle.xyz/nodes/seed.radicle.garden/rad:zz8CzpVqLxYXKHsiKzDBPBa474HQ)
+
 1. **Check active issues**: `just issues`
 2. **Create feature branch**: `git checkout -b feature/your-feature`
 3. **Draft your work**: `just draft-issue your-feature` (optional)
