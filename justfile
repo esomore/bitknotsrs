@@ -42,6 +42,22 @@ run-regtest:
 run-testnet:
     cargo run -- --network testnet
 
+# Run in mainnet mode
+run-mainnet:
+    cargo run -- --network mainnet
+
+# Run with mainnet config file
+run-mainnet-config:
+    cargo run -- --config config/mainnet.toml
+
+# Run with testnet config file
+run-testnet-config:
+    cargo run -- --config config/testnet.toml
+
+# Run with regtest config file
+run-regtest-config:
+    cargo run -- --config config/regtest.toml
+
 # Run with custom data directory
 run-datadir datadir:
     cargo run -- --datadir {{datadir}}
@@ -166,6 +182,41 @@ test-rpc-hash:
     curl -s -X POST http://localhost:18443 \
         -H "Content-Type: application/json" \
         -d '{"jsonrpc":"2.0","method":"getbestblockhash","params":[],"id":1}' | jq .
+
+# === NETWORK-SPECIFIC API TESTING ===
+
+# Test mainnet API (port 8332)
+test-api-mainnet:
+    curl -s http://localhost:8332/health | jq .
+    curl -s http://localhost:8332/api/v1/info | jq .
+
+# Test testnet API (port 18332)
+test-api-testnet:
+    curl -s http://localhost:18332/health | jq .
+    curl -s http://localhost:18332/api/v1/info | jq .
+
+# Test regtest API (port 8332)
+test-api-regtest:
+    curl -s http://localhost:8332/health | jq .
+    curl -s http://localhost:8332/api/v1/info | jq .
+
+# Test mainnet RPC (port 8333)
+test-rpc-mainnet:
+    curl -s -X POST http://localhost:8333 \
+        -H "Content-Type: application/json" \
+        -d '{"jsonrpc":"2.0","method":"getblockchaininfo","params":[],"id":1}' | jq .
+
+# Test testnet RPC (port 18333)
+test-rpc-testnet:
+    curl -s -X POST http://localhost:18333 \
+        -H "Content-Type: application/json" \
+        -d '{"jsonrpc":"2.0","method":"getblockchaininfo","params":[],"id":1}' | jq .
+
+# Test regtest RPC (port 18443)
+test-rpc-regtest:
+    curl -s -X POST http://localhost:18443 \
+        -H "Content-Type: application/json" \
+        -d '{"jsonrpc":"2.0","method":"getblockchaininfo","params":[],"id":1}' | jq .
 
 # === RADICLE COMMANDS ===
 
@@ -351,14 +402,67 @@ init-db:
     cargo run -- --config test-config.toml --generate-config
     cargo run -- --config test-config.toml
 
+# Initialize mainnet database
+init-db-mainnet:
+    cargo run -- --config config/mainnet.toml --generate-config
+    mkdir -p data/mainnet logs/mainnet
+    cargo run -- --config config/mainnet.toml
+
+# Initialize testnet database
+init-db-testnet:
+    cargo run -- --config config/testnet.toml --generate-config
+    mkdir -p data/testnet logs/testnet
+    cargo run -- --config config/testnet.toml
+
+# Initialize regtest database
+init-db-regtest:
+    cargo run -- --config config/regtest.toml --generate-config
+    mkdir -p data/regtest logs/regtest
+    cargo run -- --config config/regtest.toml
+
 # Reset database
 reset-db:
     rm -rf data/rocksdb/
     rm -rf test_data/rocksdb/
 
+# Reset all network databases
+reset-db-all:
+    rm -rf data/mainnet/rocksdb/
+    rm -rf data/testnet/rocksdb/
+    rm -rf data/regtest/rocksdb/
+    rm -rf test_data/rocksdb/
+
+# Reset mainnet database
+reset-db-mainnet:
+    rm -rf data/mainnet/rocksdb/
+
+# Reset testnet database
+reset-db-testnet:
+    rm -rf data/testnet/rocksdb/
+
+# Reset regtest database
+reset-db-regtest:
+    rm -rf data/regtest/rocksdb/
+
 # Backup database
 backup-db:
     tar -czf db-backup-$(date +%Y%m%d-%H%M%S).tar.gz data/rocksdb/
+
+# Backup all network databases
+backup-db-all:
+    tar -czf db-backup-all-$(date +%Y%m%d-%H%M%S).tar.gz data/
+
+# Backup mainnet database
+backup-db-mainnet:
+    tar -czf db-backup-mainnet-$(date +%Y%m%d-%H%M%S).tar.gz data/mainnet/
+
+# Backup testnet database
+backup-db-testnet:
+    tar -czf db-backup-testnet-$(date +%Y%m%d-%H%M%S).tar.gz data/testnet/
+
+# Backup regtest database
+backup-db-regtest:
+    tar -czf db-backup-regtest-$(date +%Y%m%d-%H%M%S).tar.gz data/regtest/
 
 # === MONITORING ===
 
@@ -400,11 +504,15 @@ help-build:
 # Show run help
 help-run:
     @echo "=== Run Commands ==="
-    @echo "run            - Run with default config"
-    @echo "run-config     - Run with custom config file"
-    @echo "run-regtest    - Run in regtest mode"
-    @echo "run-testnet    - Run in testnet mode"
-    @echo "run-datadir    - Run with custom data directory"
+    @echo "run                 - Run with default config"
+    @echo "run-config          - Run with custom config file"
+    @echo "run-regtest         - Run in regtest mode"
+    @echo "run-testnet         - Run in testnet mode"
+    @echo "run-mainnet         - Run in mainnet mode"
+    @echo "run-regtest-config  - Run with regtest config file"
+    @echo "run-testnet-config  - Run with testnet config file"
+    @echo "run-mainnet-config  - Run with mainnet config file"
+    @echo "run-datadir         - Run with custom data directory"
 
 # Show test help
 help-test:

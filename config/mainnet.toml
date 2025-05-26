@@ -1,0 +1,97 @@
+# BitKnotsRS Mainnet Configuration
+# Production Bitcoin mainnet settings
+
+[network]
+network = "mainnet"
+datadir = "./data/mainnet"
+
+[api]
+host = "127.0.0.1"
+port = 8332
+enabled = true
+cors_enabled = false
+
+[api.rate_limit]
+requests_per_minute = 60
+burst_size = 5
+
+[rpc]
+host = "127.0.0.1"
+port = 8333
+user = "bitcoin"
+password = "changeme"
+enabled = true
+allowed_methods = [
+    "getblockchaininfo",
+    "getbestblockhash",
+    "getblock",
+    "gettransaction",
+    "sendrawtransaction",
+    "getmempoolinfo",
+    "getrawmempool",
+    "getpeerinfo",
+    "getnetworkinfo"
+]
+
+[storage]
+rocks_db_path = "./data/mainnet/rocksdb"
+cache_size = 1073741824  # 1GB
+max_open_files = 2000
+compression = "lz4"
+backup_enabled = true
+backup_interval_hours = 24
+
+[network_config]
+listen_port = 8333
+max_peers = 125
+connection_timeout_secs = 60
+discovery_interval_secs = 300
+custom_peers = []
+enable_dns_seeds = true
+enable_peer_exchange = true
+
+[network_config.zmq]
+enabled = true
+pub_port = 28332
+sub_endpoints = []
+topics = ["hashblock", "hashtx", "rawblock", "rawtx"]
+
+[metrics]
+enabled = true
+host = "127.0.0.1"
+port = 9090
+path = "/metrics"
+
+[metrics.otel]
+enabled = false
+endpoint = ""
+service_name = "bitknotsrs-mainnet"
+service_version = "0.1.0"
+
+[logging]
+level = "info"
+format = "json"
+file_enabled = true
+file_path = "./logs/mainnet/bitknotsrs.log"
+max_file_size_mb = 100
+max_files = 10
+
+[events]
+enabled_publishers = ["zmq"]
+
+[events.zmq]
+enabled = true
+port = 28333
+topics = ["block", "transaction", "peer"]
+
+[events.k8s]
+enabled = false
+namespace = "bitcoin"
+node_name = "bitknotsrs-mainnet"
+event_types = ["block", "transaction", "peer", "chain"]
+
+[events.webhook]
+enabled = false
+endpoints = []
+timeout_secs = 10
+retry_attempts = 3

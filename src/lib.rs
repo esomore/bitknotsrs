@@ -7,6 +7,7 @@ pub mod rpc;
 pub mod storage;
 pub mod actors;
 pub mod error;
+pub mod network;
 
 pub use config::Config;
 pub use error::{NodeError, NodeResult};

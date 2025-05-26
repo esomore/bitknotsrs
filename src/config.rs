@@ -91,6 +91,10 @@ pub struct NetworkConfig {
     pub listen_port: u16,
     pub max_peers: usize,
     pub connection_timeout_secs: u64,
+    pub discovery_interval_secs: u64,
+    pub custom_peers: Vec<String>,
+    pub enable_dns_seeds: bool,
+    pub enable_peer_exchange: bool,
     pub zmq: ZmqConfig,
 }
 
@@ -218,6 +222,40 @@ impl Config {
         Ok(())
     }
 
+    /// Get the effective listen port for the current network
+    pub fn effective_listen_port(&self) -> u16 {
+        // Use configured port if set, otherwise use network default
+        if self.network_config.listen_port != 0 {
+            self.network_config.listen_port
+        } else {
+            // Return network-specific default ports
+            match self.network {
+                Network::Mainnet => 8333,
+                Network::Testnet => 18333,
+                Network::Regtest => 18444,
+            }
+        }
+    }
+
+    /// Check if DNS seed discovery should be enabled for this network
+    pub fn should_use_dns_seeds(&self) -> bool {
+        // DNS seeds are only useful for mainnet and testnet, not regtest
+        self.network_config.enable_dns_seeds && matches!(self.network, Network::Mainnet | Network::Testnet)
+    }
+
+    /// Get custom peers combined with network-specific localhost peers
+    pub fn all_custom_peers(&self) -> Vec<String> {
+        let mut peers = self.network_config.custom_peers.clone();
+
+        // Add localhost peers for regtest
+        if matches!(self.network, Network::Regtest) {
+            peers.push(format!("127.0.0.1:{}", self.effective_listen_port()));
+            peers.push(format!("localhost:{}", self.effective_listen_port()));
+        }
+
+        peers
+    }
+
     pub fn default_regtest() -> Self {
         Self {
             network: Network::Regtest,
@@ -258,6 +296,10 @@ impl Config {
                 listen_port: 18444,
                 max_peers: 8,
                 connection_timeout_secs: 30,
+                discovery_interval_secs: 60,
+                custom_peers: vec![],
+                enable_dns_seeds: true,
+                enable_peer_exchange: true,
                 zmq: ZmqConfig {
                     enabled: true,
                     pub_port: Some(28332),
@@ -334,5 +376,77 @@ impl Config {
         config.metrics.enabled = false; // Disable metrics for tests
         config.rpc.enabled = false; // Disable RPC for tests
         config
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_effective_listen_port() {
+        let mut config = Config::default_regtest();
+
+        // Test with configured port
+        config.network_config.listen_port = 9999;
+        assert_eq!(config.effective_listen_port(), 9999);
+
+        // Test with default port (0 means use network default)
+        config.network_config.listen_port = 0;
+        assert_eq!(config.effective_listen_port(), 18444); // regtest default
+
+        // Test different networks
+        config.network = Network::Mainnet;
+        assert_eq!(config.effective_listen_port(), 8333);
+
+        config.network = Network::Testnet;
+        assert_eq!(config.effective_listen_port(), 18333);
+    }
+
+    #[test]
+    fn test_should_use_dns_seeds() {
+        let mut config = Config::default_regtest();
+
+        // Regtest should not use DNS seeds even if enabled
+        config.network_config.enable_dns_seeds = true;
+        assert!(!config.should_use_dns_seeds());
+
+        // Mainnet should use DNS seeds if enabled
+        config.network = Network::Mainnet;
+        config.network_config.enable_dns_seeds = true;
+        assert!(config.should_use_dns_seeds());
+
+        // Mainnet should not use DNS seeds if disabled
+        config.network_config.enable_dns_seeds = false;
+        assert!(!config.should_use_dns_seeds());
+
+        // Testnet should use DNS seeds if enabled
+        config.network = Network::Testnet;
+        config.network_config.enable_dns_seeds = true;
+        assert!(config.should_use_dns_seeds());
+    }
+
+    #[test]
+    fn test_all_custom_peers() {
+        let mut config = Config::default_regtest();
+        config.network_config.custom_peers = vec!["peer1:8333".to_string(), "peer2:8333".to_string()];
+
+        let peers = config.all_custom_peers();
+
+        // Should include custom peers
+        assert!(peers.contains(&"peer1:8333".to_string()));
+        assert!(peers.contains(&"peer2:8333".to_string()));
+
+        // Should include localhost peers for regtest
+        assert!(peers.contains(&"127.0.0.1:18444".to_string()));
+        assert!(peers.contains(&"localhost:18444".to_string()));
+
+        // Mainnet should not include localhost peers
+        config.network = Network::Mainnet;
+        let mainnet_peers = config.all_custom_peers();
+        assert!(mainnet_peers.contains(&"peer1:8333".to_string()));
+        assert!(mainnet_peers.contains(&"peer2:8333".to_string()));
+        assert!(!mainnet_peers.contains(&"127.0.0.1:18444".to_string()));
+        assert!(!mainnet_peers.contains(&"localhost:18444".to_string()));
     }
 }

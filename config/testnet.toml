@@ -1,0 +1,97 @@
+# BitKnotsRS Testnet Configuration
+# Bitcoin testnet settings for development and testing
+
+[network]
+network = "testnet"
+datadir = "./data/testnet"
+
+[api]
+host = "127.0.0.1"
+port = 18332
+enabled = true
+cors_enabled = true
+
+[api.rate_limit]
+requests_per_minute = 100
+burst_size = 10
+
+[rpc]
+host = "127.0.0.1"
+port = 18333
+user = "testnet"
+password = "testpass"
+enabled = true
+allowed_methods = [
+    "getblockchaininfo",
+    "getbestblockhash",
+    "getblock",
+    "gettransaction",
+    "sendrawtransaction",
+    "getmempoolinfo",
+    "getrawmempool",
+    "getpeerinfo",
+    "getnetworkinfo"
+]
+
+[storage]
+rocks_db_path = "./data/testnet/rocksdb"
+cache_size = 536870912  # 512MB
+max_open_files = 1000
+compression = "lz4"
+backup_enabled = false
+backup_interval_hours = 24
+
+[network_config]
+listen_port = 18333
+max_peers = 50
+connection_timeout_secs = 30
+discovery_interval_secs = 120
+custom_peers = []
+enable_dns_seeds = true
+enable_peer_exchange = true
+
+[network_config.zmq]
+enabled = true
+pub_port = 28334
+sub_endpoints = []
+topics = ["hashblock", "hashtx", "rawblock", "rawtx"]
+
+[metrics]
+enabled = true
+host = "127.0.0.1"
+port = 9091
+path = "/metrics"
+
+[metrics.otel]
+enabled = false
+endpoint = ""
+service_name = "bitknotsrs-testnet"
+service_version = "0.1.0"
+
+[logging]
+level = "debug"
+format = "pretty"
+file_enabled = true
+file_path = "./logs/testnet/bitknotsrs.log"
+max_file_size_mb = 50
+max_files = 5
+
+[events]
+enabled_publishers = ["zmq"]
+
+[events.zmq]
+enabled = true
+port = 28335
+topics = ["block", "transaction", "peer"]
+
+[events.k8s]
+enabled = false
+namespace = "bitcoin-testnet"
+node_name = "bitknotsrs-testnet"
+event_types = ["block", "transaction", "peer", "chain"]
+
+[events.webhook]
+enabled = false
+endpoints = []
+timeout_secs = 10
+retry_attempts = 3
